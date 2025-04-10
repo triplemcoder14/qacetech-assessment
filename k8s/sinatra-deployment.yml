@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sinatra-app-v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sinatra
+      version: "1.0.0"
+  template:
+    metadata:
+      labels:
+        app: sinatra
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: sinatra
+          image: yourdockerhub/sinatra-app:1.0.0
+          ports:
+            - containerPort: 4567
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4567
+            initialDelaySeconds: 5
+            periodSeconds: 3

@@ -19,9 +19,10 @@ jobs:
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: "triplemcoder14" 
-          password: "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" 
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
           registry: ghcr.io
+
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v5
         with:

@@ -30,17 +30,27 @@ jobs:
           dockerfile: Dockerfile
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
-
       - name: Set up Minikube certificates
         run: |
-          mkdir -p /root/.minikube/profiles/minikube
-          echo "$MINIKUBE_CLIENT_CRT" > /root/.minikube/profiles/minikube/client.crt
-          echo "$MINIKUBE_CLIENT_KEY" > /root/.minikube/profiles/minikube/client.key
-          echo "$MINIKUBE_CA_CRT" > /root/.minikube/ca.crt
+          mkdir -p $HOME/.minikube/profiles/minikube
+          echo "$MINIKUBE_CLIENT_CRT" > $HOME/.minikube/profiles/minikube/client.crt
+          echo "$MINIKUBE_CLIENT_KEY" > $HOME/.minikube/profiles/minikube/client.key
+          echo "$MINIKUBE_CA_CRT" > $HOME/.minikube/ca.crt
         env:
           MINIKUBE_CLIENT_CRT: ${{ secrets.MINIKUBE_CLIENT_CRT }}
           MINIKUBE_CLIENT_KEY: ${{ secrets.MINIKUBE_CLIENT_KEY }}
           MINIKUBE_CA_CRT: ${{ secrets.MINIKUBE_CA_CRT }}
+
+      # - name: Set up Minikube certificates
+      #   run: |
+      #     mkdir -p /root/.minikube/profiles/minikube
+      #     echo "$MINIKUBE_CLIENT_CRT" > /root/.minikube/profiles/minikube/client.crt
+      #     echo "$MINIKUBE_CLIENT_KEY" > /root/.minikube/profiles/minikube/client.key
+      #     echo "$MINIKUBE_CA_CRT" > /root/.minikube/ca.crt
+      #   env:
+      #     MINIKUBE_CLIENT_CRT: ${{ secrets.MINIKUBE_CLIENT_CRT }}
+      #     MINIKUBE_CLIENT_KEY: ${{ secrets.MINIKUBE_CLIENT_KEY }}
+      #     MINIKUBE_CA_CRT: ${{ secrets.MINIKUBE_CA_CRT }}
 
       - name: Get Kubeconfig from Minikube
         run: |

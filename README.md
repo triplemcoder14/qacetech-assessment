@@ -50,7 +50,7 @@ Deploy version 1.0.0 of the **"Cats"** application with fault tolerance and auto
 ### Implementation:
 - The **Cats application** was containerized using a **Dockerfile** to ensure portability and consistency across environments.
 - The application was deployed to a **Kubernetes cluster** with horizontal scaling enabled. This ensures that the application can handle increased load by scaling out, providing fault tolerance and availability.
-- **Prometheus** was set up for monitoring the health of the application, and **Grafana** was used to visualize metrics and ensure that the system can respond to failures by scaling automatically.
+- **Prometheus** was set up for monitoring the health of the application, and **Jaeger** was used to visualize metrics and ensure that the system can respond to failures by scaling automatically.
 
 ---
 
@@ -73,8 +73,8 @@ Automate the deployment of version 2.0.1 of the **Cats** application without dow
 Add features to improve the deployment process and manageability without changing the application's existing functionality.
 
 ### Implementation:
-- **Monitoring and Observability**: Integrated **Prometheus** for monitoring application performance and health, and **Grafana** for dashboarding. This allowed for real-time performance metrics and visualization of application health.
-- **Logging**: Set up **Fluentd** to collect logs from the application and send them to **Elasticsearch**, where they could be stored and analyzed for troubleshooting and debugging.
+- **Monitoring and Observability**: Integrated **Opentelemetry auto-instrumentation (tail-base sampling)** for monitoring application performance and health, and **Jaeger** for dashboarding. This allowed for real-time performance metrics and visualization of application health.
+- **Logging**: Set up **Otel-collector** to collect logs from the application and send them to **Jaeger**, where they could be stored and analyzed for troubleshooting and debugging.
 - **Alerting**: Configured **Alertmanager** to send notifications in case of system failures, resource issues, or degraded application performance.
 
 ---
@@ -86,7 +86,7 @@ The entire process, from the deployment of the Sinatra application to the zero-d
 This documentation includes:
 - Step-by-step implementation details.
 - Links to related GitHub repositories and resources.
-- Setup instructions for required tools like Kubernetes, Docker, Prometheus, and Grafana.
+- Setup instructions for required tools like Kubernetes, Docker, Opentelemetry, and Dashboarding.
 - CI/CD pipeline configuration details.
 
 ---
@@ -108,7 +108,7 @@ This documentation includes:
 - **GitHub Actions**: Easy CI/CD integration with GitHub and a large community of contributors and actions available.
 - **Docker**: Ensures consistency between development, staging, and production environments, simplifying deployment and troubleshooting.
 - **Kubernetes**: Scalable, fault-tolerant, and highly customizable orchestration platform for managing containers.
-- **Prometheus & Grafana**: Great tools for monitoring and alerting in a cloud-native environment.
+- **Opentelemetry, Jaeger NodeExporter and Alertmanager**: Great tools for monitoring and alerting in a cloud-native environment.
 - **Fluentd & Elasticsearch**: Provide powerful logging and log aggregation capabilities.
 
 ### Cons:
@@ -122,7 +122,7 @@ This documentation includes:
 
 The solution implemented for this DevOps assessment ensures **zero-downtime deployments**, **scalable infrastructure**, **automated pipelines**, and **comprehensive monitoring**. The system is designed to be fault-tolerant, scalable, and maintainable, making it suitable for production workloads. The entire process has been documented to allow for easy management and understanding by any team member.
 
-## Beyond code...
+## Beyond codes...
 
 ![Screenshot 2025-04-11 040120](https://github.com/user-attachments/assets/427fa7d8-c527-41a2-a8aa-8d4fb13c1e84)
 ![Screenshot 2025-04-11 034804](https://github.com/user-attachments/assets/76456487-bb01-4f1c-9a8e-924870abcacb)

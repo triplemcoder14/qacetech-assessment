@@ -1,24 +1,30 @@
-# get the service account token
+#!/bin/bash
+
+set -e
+
+# get tghe service acc token
 SECRET_NAME=$(kubectl get sa github-actions-sa -o jsonpath='{.secrets[0].name}')
-kubectl get secret $SECRET_NAME -o jsonpath='{.data.token}' | base64 --decode > github-actions-sa-token.txt
 
-# get the k8s cluster ca certificate
-kubectl get secret $SECRET_NAME -o jsonpath='{.data["ca.crt"]}' | base64 --decode > github-actions-ca.crt
+# xtract the service account token
+kubectl get secret "$SECRET_NAME" -o jsonpath='{.data.token}' | base64 --decode > github-actions-sa-token.txt
 
-# get the cluster API url
+# Extract the cluster CA certificate
+kubectl get secret "$SECRET_NAME" -o jsonpath='{.data["ca.crt"]}' | base64 --decode > github-actions-ca.crt
+
+# get k8s api-server URL
 API_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
 
-# generate the kubeconfig file for gitHub actions
-KUBECONFIG=$(cat <<EOF
+# generate the kubeconfig
+cat <<EOF > github-actions-kubeconfig
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: $(cat github-actions-ca.crt | base64 -w0)
+    certificate-authority-data: $(base64 -w0 < github-actions-ca.crt)
     server: $API_SERVER
   name: minikube
 contexts:
 - context:
-    cluster: my-cluster
+    cluster: minikube
     user: github-actions-sa
   name: github-actions-context
 current-context: github-actions-context
@@ -28,6 +34,5 @@ users:
   user:
     token: $(cat github-actions-sa-token.txt)
 EOF
-)
 
-echo "$KUBECONFIG" > github-actions-kubeconfig
+echo "github-actions-kubeconfig generated successfully!"

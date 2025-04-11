@@ -27,6 +27,14 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: Dockerfile
+          dockerfile: sinatra-app/Dockerfile
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
+
+#      - name: Build and push Docker image to GHCR
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          dockerfile: sinDockerfile
+#          push: true
+#          tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest

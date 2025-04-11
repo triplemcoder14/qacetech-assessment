@@ -31,23 +31,15 @@ jobs:
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
-      - name: Set up Minikube certificates
+      - name: Set up Minikube
         run: |
-          mkdir -p $HOME/.minikube/profiles/minikube
-          echo "$MINIKUBE_CLIENT_CRT" > $HOME/.minikube/profiles/minikube/client.crt
-          echo "$MINIKUBE_CLIENT_KEY" > $HOME/.minikube/profiles/minikube/client.key
-          echo "$MINIKUBE_CA_CRT" > $HOME/.minikube/ca.crt
-        env:
-          MINIKUBE_CLIENT_CRT: ${{ secrets.MINIKUBE_CLIENT_CRT }}
-          MINIKUBE_CLIENT_KEY: ${{ secrets.MINIKUBE_CLIENT_KEY }}
-          MINIKUBE_CA_CRT: ${{ secrets.MINIKUBE_CA_CRT }}
+          minikube start --driver=docker
+          minikube profile list
 
-      - name: Get Kubeconfig from Minikube
+      - name: Set Kubeconfig from Minikube
         run: |
           mkdir -p $HOME/.kube
           minikube update-context
-        env:
-          KUBEVERSION: "v1.23.0"
 
       - name: Verify connection to Minikube cluster
         run: |
@@ -63,9 +55,7 @@ jobs:
 
       - name: Test service URLs
         run: |
-          # List services to verify the namespace and service name
           minikube service list -n default
-          # Test the specific service URL
           minikube service local-devex-svc -n default --url
           echo "------------------opening the service------------------"
           curl $(minikube service local-devex-svc -n default --url)

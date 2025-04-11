@@ -31,15 +31,12 @@ jobs:
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
-      - name: Set up Minikube
-        run: |
-          minikube start --driver=docker
-          minikube profile list
-
-      - name: Set Kubeconfig from Minikube
+      - name: Set Kubeconfig for Minikube (via secret)
         run: |
           mkdir -p $HOME/.kube
-          minikube update-context
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
       - name: Verify connection to Minikube cluster
         run: |
@@ -49,9 +46,9 @@ jobs:
       - name: Deploy to Minikube
         run: |
           kubectl apply -f k8s/sinatra-deployment.yml
-          kubectl apply -f k8s/service-account.yml
-          kubectl apply -f k8s/role.yml
-          kubectl apply -f k8s/role-binding.yml
+          # kubectl apply -f k8s/service-account.yml
+          # kubectl apply -f k8s/role.yml
+          # kubectl apply -f k8s/role-binding.yml
 
       - name: Test service URLs
         run: |

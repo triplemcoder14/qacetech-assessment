@@ -122,6 +122,10 @@ This documentation includes:
 
 The solution implemented for this DevOps assessment ensures **zero-downtime deployments**, **scalable infrastructure**, **automated pipelines**, and **comprehensive monitoring**. The system is designed to be fault-tolerant, scalable, and maintainable, making it suitable for production workloads. The entire process has been documented to allow for easy management and understanding by any team member.
 
----
+## Beyond code...
+
+![Screenshot 2025-04-11 040120](https://github.com/user-attachments/assets/427fa7d8-c527-41a2-a8aa-8d4fb13c1e84)
+![Screenshot 2025-04-11 034804](https://github.com/user-attachments/assets/76456487-bb01-4f1c-9a8e-924870abcacb)
+![Screenshot 2025-04-11 034253](https://github.com/user-attachments/assets/750f26ad-097b-422e-af3f-f81cacf7a85d)
 
 

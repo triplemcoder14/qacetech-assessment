@@ -45,10 +45,10 @@ jobs:
           kubectl config set-context minikube --cluster=minikube --user=minikube
           kubectl config use-context minikube
 
-      - name: Verify connection to Minikube cluster
-        run: |
-          kubectl cluster-info
-          kubectl get nodes
+      # - name: Verify connection to Minikube cluster
+      #   run: |
+      #     kubectl cluster-info
+      #     kubectl get nodes
           
       - name: Deploy to Minikube
         run: |

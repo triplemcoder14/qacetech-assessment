@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
   name: qace-sinatraapp
 spec:
-  replicas: 3  # Set the number of replicas to 3
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: qace-sinatraapp
@@ -17,3 +22,57 @@ spec:
           image: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
           ports:
             - containerPort: 8080
+      imagePullSecrets:
+        - name: ghcr-auth
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: qace-sinatraapp-service
+spec:
+  selector:
+    app: qace-sinatraapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4567
+      nodePort: 30080
+  type: NodePort
+
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: qace-sinatraapp-service
+#spec:
+#  selector:
+#    app: qace-sinatraapp
+#  ports:
+#    - protocol: TCP
+#      port: 80
+#      targetPort: 8080
+#  type: LoadBalancer
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: qace-sinatraapp-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: qace-sinatraapp
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+

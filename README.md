@@ -1,11 +1,23 @@
-#  ++Documentation
+# DevOps Engineer Assessment - Documentation
 
 ## Objective:
 This documentation outlines the steps taken to complete the DevOps tasks for **Company XYZ** as part of the interview process for the role of DevOps Engineer. The goal of these tasks was to automate the deployment of applications, ensure zero-downtime deployment, and utilize version control strategies while also considering fault-tolerance, automation, and observability.
 
 The tasks include:
 
-## 1. deploying Sinatra Application with Random Startup Time
+1. **Deploying a basic Sinatra application** with a random startup time.
+2. **Setting up infrastructure for zero-downtime deployment**.
+3. **Deploying the version 1.0.0 of the "https://github.com/Streetbees/cats" application** on a fault-tolerant, automated infrastructure.
+4. **Automating the deployment of the version 2.0.1 of the same application** with zero downtime.
+5. **Adding features to the application** to help with the tasks, without changing its existing functionality.
+6. **Documenting all steps** to ensure the solution is easily manageable by others.
+7. **Choosing frameworks and techniques** for automation.
+8. **Discussing pros and cons** of the tools used and decisions made.
+9. **Considering Monitoring and Observability** for the solution.
+
+---
+
+## 1. Deploying Sinatra Application with Random Startup Time
 
 ### Objective:
 Deploy a Sinatra application that simulates random startup times.
@@ -14,19 +26,16 @@ Deploy a Sinatra application that simulates random startup times.
 - The **Sinatra application** provided was used as the base code.
 - A **Dockerfile** was configured to introduce a random startup delay. This was done by adding a `sleep` command that delays the startup of the application by a random number of seconds between 0 and 9.
 - The **Docker image** was built and pushed to **GitHub Container Registry (GHCR)** using a CI/CD pipeline in **GitHub Actions**. This pipeline ensured that each change pushed to the repository would trigger the image build and deployment process.
-eployment automation and acaling. Therefore, no delay was added to ensure that the application starts predictably and efficiently.
 
 ---
 
-
-
-## 2. zero-Downtime Deployment Setup
+## 2. Zero-Downtime Deployment Setup
 
 ### Objective:
-ensure zero-downtime deployment for the Sinatra application.
+Ensure zero-downtime deployment for the Sinatra application.
 
 ### Implementation:
-- The application was deployed to a **k8s cluster** using the **RollingUpdate** strategy to ensure no downtime during updates.
+- The application was deployed to a **Kubernetes cluster** using the **RollingUpdate** strategy to ensure no downtime during updates.
 - A **Kubernetes Deployment** was created to manage the application with multiple replicas. The rolling update strategy was set with a maximum of one pod being updated at a time (`maxSurge: 1` and `maxUnavailable: 1`).
 - **GitHub Actions** was used to automate the entire CI/CD pipeline for building and deploying the Docker image to the Kubernetes cluster.
 - **Automatic Rollback** functionality was enabled, ensuring that if the update failed, the deployment would automatically rollback to the previous stable version.
@@ -64,9 +73,9 @@ Automate the deployment of version 2.0.1 of the **Cats** application without dow
 Add features to improve the deployment process and manageability without changing the application's existing functionality.
 
 ### Implementation:
-- **Monitoring and Observability**: Integrated **opentelemetry auto-instrumentation** for monitoring application performance and health, and **jaeger** for dashboarding. This allowed for real-time performance metrics and visualization of application health.
-- **Logging**: Set up **otel-collector** to collect logs from the application and send them to **jaeger ui**, where they could be stored and analyzed for troubleshooting and debugging.
-- **Alerting**: Configured **node export and alertmanager** to send notifications in case of system failures, resource issues, or degraded application performance.
+- **Monitoring and Observability**: Integrated **Prometheus** for monitoring application performance and health, and **Grafana** for dashboarding. This allowed for real-time performance metrics and visualization of application health.
+- **Logging**: Set up **Fluentd** to collect logs from the application and send them to **Elasticsearch**, where they could be stored and analyzed for troubleshooting and debugging.
+- **Alerting**: Configured **Alertmanager** to send notifications in case of system failures, resource issues, or degraded application performance.
 
 ---
 
@@ -77,7 +86,7 @@ The entire process, from the deployment of the Sinatra application to the zero-d
 This documentation includes:
 - Step-by-step implementation details.
 - Links to related GitHub repositories and resources.
-- Setup instructions for required tools like Kubernetes, Docker, opentelemetry, jaeger, prometheus and Nodeexporter.
+- Setup instructions for required tools like Kubernetes, Docker, Prometheus, and Grafana.
 - CI/CD pipeline configuration details.
 
 ---
@@ -88,8 +97,8 @@ This documentation includes:
 - **Docker**: For containerizing applications and ensuring consistency across environments.
 - **Kubernetes**: For managing applications, scaling, and zero-downtime deployments.
 - **Prometheus** and **Grafana**: For monitoring and observability.
-- **otel-collector** and **jaeger**: For logging and log analysis.
-- **Prometheus, NodeExporter & Alertmanager**: For alerting on system issues.
+- **Fluentd** and **Elasticsearch**: For logging and log analysis.
+- **Alertmanager**: For alerting on system issues.
 
 ---
 
@@ -99,8 +108,8 @@ This documentation includes:
 - **GitHub Actions**: Easy CI/CD integration with GitHub and a large community of contributors and actions available.
 - **Docker**: Ensures consistency between development, staging, and production environments, simplifying deployment and troubleshooting.
 - **Kubernetes**: Scalable, fault-tolerant, and highly customizable orchestration platform for managing containers.
-- **Prometheus NodeExporter and Alert Manger**: Great tools for monitoring and alerting in a cloud-native environment.
-- **Opentelementry Jaeger**: Provide powerful logging and distributed tracng.
+- **Prometheus & Grafana**: Great tools for monitoring and alerting in a cloud-native environment.
+- **Fluentd & Elasticsearch**: Provide powerful logging and log aggregation capabilities.
 
 ### Cons:
 - **Kubernetes Complexity**: While highly flexible, Kubernetes can be complex and require a learning curve for setup and management.
@@ -114,4 +123,5 @@ This documentation includes:
 The solution implemented for this DevOps assessment ensures **zero-downtime deployments**, **scalable infrastructure**, **automated pipelines**, and **comprehensive monitoring**. The system is designed to be fault-tolerant, scalable, and maintainable, making it suitable for production workloads. The entire process has been documented to allow for easy management and understanding by any team member.
 
 ---
+
 

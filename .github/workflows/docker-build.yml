@@ -42,16 +42,6 @@ jobs:
           MINIKUBE_CLIENT_KEY: ${{ secrets.MINIKUBE_CLIENT_KEY }}
           MINIKUBE_CA_CRT: ${{ secrets.MINIKUBE_CA_CRT }}
 
-      - name: Install Minikube
-        run: |
-          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-      - name: Start Minikube
-        run: |
-          minikube start --profile=minikube
-          minikube profile list
-
       - name: Get Kubeconfig from Minikube
         run: |
           mkdir -p $HOME/.kube
@@ -63,15 +53,19 @@ jobs:
         run: |
           kubectl cluster-info
           kubectl get nodes
-          kubectl config view  # Make sure the correct context is being used
 
       - name: Deploy to Minikube
         run: |
-           kubectl apply -f k8s/sinatra-deployment.yml
+          kubectl apply -f k8s/sinatra-deployment.yml
+          kubectl apply -f k8s/service-account.yml
+          kubectl apply -f k8s/role.yml
+          kubectl apply -f k8s/role-binding.yml
 
       - name: Test service URLs
         run: |
-          minikube service list
-          minikube service local-devex-svc --url
+          # List services to verify the namespace and service name
+          minikube service list -n default
+          # Test the specific service URL
+          minikube service local-devex-svc -n default --url
           echo "------------------opening the service------------------"
-          curl $(minikube service local-devex-svc --url)
+          curl $(minikube service local-devex-svc -n default --url)

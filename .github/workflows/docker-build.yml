@@ -67,9 +67,7 @@ jobs:
 
       - name: Deploy to Minikube
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-          kubectl apply -f k8s/hpa.yaml
+           kubectl apply -f k8s/sinatra-deployment.yml
 
       - name: Test service URLs
         run: |

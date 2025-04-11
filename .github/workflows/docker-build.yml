@@ -42,7 +42,7 @@ jobs:
       - name: Set up Kubeconfig with Minikube proxy
         run: |
           kubectl config set-cluster minikube --server=https://bcc1-154-118-33-200.ngrok-free.app:8001
-          kubectl config set-context minikube --cluster=minikube --user=minikube
+          kubectl config set-context minikube --cluster=minikube --user=github-actions-sa
           kubectl config use-context minikube
 
       - name: Verify connection to Minikube cluster

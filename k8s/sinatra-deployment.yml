@@ -1,27 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sinatra-app-v1
+  name: qace-sinatraapp
 spec:
-  replicas: 2
+  replicas: 3  # Set the number of replicas to 3
   selector:
     matchLabels:
-      app: sinatra
-      version: "1.0.0"
+      app: qace-sinatraapp
   template:
     metadata:
       labels:
-        app: sinatra
-        version: "1.0.0"
+        app: qace-sinatraapp
     spec:
       containers:
-        - name: sinatra
-          image: yourdockerhub/sinatra-app:1.0.0
+        - name: qace-sinatraapp
+          image: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
           ports:
-            - containerPort: 4567
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 4567
-            initialDelaySeconds: 5
-            periodSeconds: 3
+            - containerPort: 8080

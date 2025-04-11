@@ -31,12 +31,12 @@ jobs:
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
-      - name: Set Kubeconfig for Minikube (via secret)
+      - name: Set up Kubeconfig with Minikube proxy
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          # Set up the Minikube proxy
+          kubectl config set-cluster minikube --server=http://192.168.49.2:8001
+          kubectl config set-context minikube --cluster=minikube --user=minikube
+          kubectl config use-context minikube
 
       - name: Verify connection to Minikube cluster
         run: |

@@ -1,22 +1,5 @@
 # +++Documentation
 
-## Objective:
-This documentation outlines the steps taken to complete the DevOps tasks for **Company XYZ** as part of the interview process for the role of DevOps Engineer. The goal of these tasks was to automate the deployment of applications, ensure zero-downtime deployment, and utilize version control strategies while also considering fault-tolerance, automation, and observability.
-
-The tasks include:
-
-1. **Deploying a basic Sinatra application** with a random startup time.
-2. **Setting up infrastructure for zero-downtime deployment**.
-3. **Deploying the version 1.0.0 of the "https://github.com/Streetbees/cats" application** on a fault-tolerant, automated infrastructure.
-4. **Automating the deployment of the version 2.0.1 of the same application** with zero downtime.
-5. **Adding features to the application** to help with the tasks, without changing its existing functionality.
-6. **Documenting all steps** to ensure the solution is easily manageable by others.
-7. **Choosing frameworks and techniques** for automation.
-8. **Discussing pros and cons** of the tools used and decisions made.
-9. **Considering Monitoring and Observability** for the solution.
-
----
-
 ## 1. Deploying Sinatra Application with Random Startup Time
 
 ### Objective:

@@ -33,8 +33,8 @@ jobs:
       - name: Update Image in Deployment and Apply to Minikube
         run: |
           export KUBECONFIG=$HOME/.kube/config
-          sed -i "s|image:.*|image: ghcr.io/${{ github.repository_owner }}/sinatra-app:latest|g" ./k8s/sinatra-deployment.yml
-          kubectl apply -f ./k8s/
+          sed -i "s|image:.*|image: ghcr.io/${{ github.repository_owner }}/sinatra-app:latest|g" ./k8s_resources/sinatra-deployment.yml
+          kubectl apply -f ./k8s/sinatra-deployment.yml
 
       - name: Verify Deployment
         run: |

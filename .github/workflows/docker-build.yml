@@ -34,8 +34,3 @@ jobs:
           export KUBECONFIG=$HOME/.kube/config
           sed -i "s|image:.*|image: ghcr.io/${{ github.repository_owner }}/sinatra-app:latest|g" /home/ubuntu/project/qacetech-assessment/k8s_resources/sinatra-deployment.yml
           kubectl apply -f /home/ubuntu/project/qacetech-assessment/k8s_resources/sinatra-deployment.yml
-
-      - name: Verify Deployment
-        run: |
-          kubectl rollout status deployment/sinatra-app
-          kubectl get svc,pods

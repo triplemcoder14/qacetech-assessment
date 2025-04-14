@@ -1,4 +1,4 @@
-name: Build and Deploy to Minikube
+name: Build and Deploy to EC2 with Minikube
 
 on:
   push:
@@ -6,14 +6,13 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-     
       - name: Checkout code
         uses: actions/checkout@v3
-     
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -32,34 +31,115 @@ jobs:
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
-      - name: Set Kubeconfig for Minikube (via secret)
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      - name: Deploy to EC2 and Install Minikube
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ec2-54-195-176-79.eu-west-1.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
 
-      - name: Set up Kubeconfig with Minikube proxy
-        run: |
-          kubectl config set-cluster minikube --server=https://bcc1-154-118-33-200.ngrok-free.app:8001
-          kubectl config set-context minikube --cluster=minikube --user=github-actions-sa
-          kubectl config use-context minikube
+            echo "updating packages..."
+            sudo apt-get update -y
 
-      # - name: Verify connection to Minikube cluster
-      #   run: |
-      #     kubectl cluster-info
-      #     kubectl get nodes
+            echo "Installing Docker..."
+            sudo apt-get install -y docker.io
+            sudo usermod -aG docker $USER
+
+            echo "installing Kubectl..."
+            curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+
+            echo "installing Minikube..."
+            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+            echo "starting Minikube..."
+            sudo minikube start --driver=docker
+
+            echo "waiting for cluster to be ready..."
+            sleep 30
+            kubectl get nodes
+
+            echo "cloning the repo if not already present..."
+            if [ ! -d "your-repo-folder" ]; then
+              git clone https://github.com/${{ github.repository }}.git
+            fi
+            cd qacetech-assessment/
+            git pull origin main
+
+            echo "Deploying to Minikube..."
+            kubectl apply -f k8s/sinatra-deployment.yml
+
+            echo "🌐 Testing the service..."
+            minikube service local-devex-svc -n default --url
+            curl $(minikube service local-devex-svc -n default --url)
+
+
+# name: Build and Deploy to Minikube
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+     
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+     
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Log in to GitHub Container Registry
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.GHCR_USERNAME }}
+#           password: ${{ secrets.GHCR_TOKEN }}
+#           registry: ghcr.io
+
+#       - name: Build and push Docker image to GHCR
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: sinatra-app
+#           dockerfile: Dockerfile
+#           push: true
+#           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
+
+#       - name: Set Kubeconfig for Minikube (via secret)
+#         run: |
+#           mkdir -p $HOME/.kube
+#           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+#         env:
+#           KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+#       - name: Set up Kubeconfig with Minikube proxy
+#         run: |
+#           kubectl config set-cluster minikube --server=https://bcc1-154-118-33-200.ngrok-free.app:8001
+#           kubectl config set-context minikube --cluster=minikube --user=github-actions-sa
+#           kubectl config use-context minikube
+
+#       # - name: Verify connection to Minikube cluster
+#       #   run: |
+#       #     kubectl cluster-info
+#       #     kubectl get nodes
           
-      - name: Deploy to Minikube
-        run: |
-          kubectl apply -f k8s/sinatra-deployment.yml
-          # kubectl apply -f k8s/service-account.yml
-          # kubectl apply -f k8s/role.yml
-          # kubectl apply -f k8s/role-binding.yml
+#       - name: Deploy to Minikube
+#         run: |
+#           kubectl apply -f k8s/sinatra-deployment.yml
+#           # kubectl apply -f k8s/service-account.yml
+#           # kubectl apply -f k8s/role.yml
+#           # kubectl apply -f k8s/role-binding.yml
 
-      - name: Test service URLs
-        run: |
-          minikube service list -n default
-          minikube service local-devex-svc -n default --url
-          echo "------------------opening the service------------------"
-          curl $(minikube service local-devex-svc -n default --url)
+#       - name: Test service URLs
+#         run: |
+#           minikube service list -n default
+#           minikube service local-devex-svc -n default --url
+#           echo "------------------opening the service------------------"
+#           curl $(minikube service local-devex-svc -n default --url)

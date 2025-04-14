@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: sinatra-app
-          file: Dockerfile
+          file: sinatra-app/Dockerfile
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 

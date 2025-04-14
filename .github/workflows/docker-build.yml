@@ -22,14 +22,21 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
           registry: ghcr.io
-
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v5
         with:
           context: sinatra-app
-          dockerfile: Dockerfile
+          file: Dockerfile
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
+
+      # - name: Build and push Docker image to GHCR
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: sinatra-app
+      #     dockerfile: Dockerfile
+      #     push: true
+      #     tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
       - name: Deploy to EC2 and Install Minikube
         uses: appleboy/ssh-action@v1.0.0

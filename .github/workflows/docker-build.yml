@@ -22,6 +22,7 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
           registry: ghcr.io
+
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v5
         with:
@@ -29,14 +30,6 @@ jobs:
           file: sinatra-app/Dockerfile
           push: true
           tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
-
-      # - name: Build and push Docker image to GHCR
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: sinatra-app
-      #     dockerfile: Dockerfile
-      #     push: true
-      #     tags: ghcr.io/triplemcoder14/qacetech-sinatraapp:latest
 
       - name: Deploy to EC2 and Install Minikube
         uses: appleboy/ssh-action@v1.0.0
@@ -46,32 +39,36 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
+            
+            echo "Debugging SSH connection..."
+            ssh -vvv ubuntu@ec2-54-195-176-79.eu-west-1.compute.amazonaws.com
+            echo "SSH connection successful."
 
-            echo "updating packages..."
+            echo "Updating packages..."
             sudo apt-get update -y
 
             echo "Installing Docker..."
             sudo apt-get install -y docker.io
             sudo usermod -aG docker $USER
 
-            echo "installing Kubectl..."
+            echo "Installing Kubectl..."
             curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
             chmod +x kubectl
             sudo mv kubectl /usr/local/bin/
 
-            echo "installing Minikube..."
+            echo "Installing Minikube..."
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
             sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-            echo "starting Minikube..."
+            echo "Starting Minikube..."
             sudo minikube start --driver=docker
 
-            echo "waiting for cluster to be ready..."
+            echo "Waiting for cluster to be ready..."
             sleep 30
             kubectl get nodes
 
-            echo "cloning the repo if not already present..."
-            if [ ! -d "your-repo-folder" ]; then
+            echo "Cloning the repo if not already present..."
+            if [ ! -d "qacetech-assessment" ]; then
               git clone https://github.com/${{ github.repository }}.git
             fi
             cd qacetech-assessment/
@@ -81,8 +78,10 @@ jobs:
             kubectl apply -f k8s/sinatra-deployment.yml
 
             echo "🌐 Testing the service..."
-            minikube service local-devex-svc -n default --url
-            curl $(minikube service local-devex-svc -n default --url)
+            SERVICE_URL=$(minikube service local-devex-svc -n default --url)
+            echo "Access your service at: $SERVICE_URL"
+            curl $SERVICE_URL
+
 
 
 # name: Build and Deploy to Minikube

@@ -5,7 +5,7 @@ This document provides information concerning the infrastructure as a code set f
 # Compute Setup
 This section give you a guide on how to setup a compute instance that will be used to manage the infrastructure
 
-If you don't have an SSH key already, generate a new SSH key and associate with the Bitbucket account
+If you don't have an SSH key already, generate a new SSH key and associate with the Github Account
 ```bash
 ssh-keygen -t rsa -b 4096 && \
 cat ~/.ssh/id_rsa.pub
